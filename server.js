@@ -506,10 +506,10 @@ app.post('/checkout-session', async (req, res) => {
 		},
 	  ],
 	  mode: 'payment',
-	  success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-	  cancel_url: "http://localhost:3000/bill",
-	//   success_url: "https://esociety-fdbd.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
-	//   cancel_url: "https://esociety-fdbd.onrender.com/bill",
+	//   success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
+	//   cancel_url: "http://localhost:3000/bill",
+	  success_url: "https://esociety-fdbd.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
+	  cancel_url: "https://esociety-fdbd.onrender.com/bill",
 	});
   
 	res.json({ id: session.id });
