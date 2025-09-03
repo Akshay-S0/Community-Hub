@@ -301,7 +301,8 @@ app.get("/bill", async (req,res) => {
                 year: date.year,
                 receipt: foundUser.lastPayment,
                 societyResidents: foundUsers,
-                monthlyTotal: totalMonthlyWithSquareFeet
+                monthlyTotal: totalMonthlyWithSquareFeet,
+                publishableKey: process.env.PUBLISHABLE_KEY
             });
         } catch(err) {
             console.error(err);
@@ -454,26 +455,37 @@ app.get("/editProfile", (req,res) => {
 })
 
 app.get('/success', async (req, res) => {
-    try {
-        const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-        const customer = await stripe.customers.retrieve(session.customer);
-        
-        const foundUser = await user_collection.User.findOne({_id: req.user.id});
-        foundUser.lastPayment.date = new Date(customer.created*1000);
-        foundUser.lastPayment.amount = session.amount_total/100;
-        foundUser.lastPayment.invoice = customer.invoice_prefix;
-        
-        await foundUser.save();
-        
-        const transactionDate = new Date(customer.created*1000).toLocaleString().split(', ')[0];
-        res.render("success", {
-            invoice: customer.invoice_prefix,
-            amount: session.amount_total/100,
-            date: transactionDate
-        });
-    } catch(err) {
-        console.error(err);
-        res.status(500).send("Server error");
+    if(req.isAuthenticated() && req.user.validation=='approved'){
+        try {
+            const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+            
+            if (!session) {
+                throw new Error('Session not found');
+            }
+            
+            const foundUser = await user_collection.User.findOne({_id: req.user.id});
+            if (!foundUser) {
+                throw new Error('User not found');
+            }
+            
+            foundUser.lastPayment.date = new Date();
+            foundUser.lastPayment.amount = session.amount_total/100;
+            foundUser.lastPayment.invoice = session.id;
+            
+            await foundUser.save();
+            
+            const transactionDate = new Date().toLocaleString().split(', ')[0];
+            res.render("success", {
+                invoice: session.id,
+                amount: session.amount_total/100,
+                date: transactionDate
+            });
+        } catch(err) {
+            console.error('Payment success error:', err);
+            res.status(500).send("Server error: " + err.message);
+        }
+    } else {
+        res.redirect("/login");
     }
 });
 
@@ -494,10 +506,10 @@ app.post('/checkout-session', async (req, res) => {
 		},
 	  ],
 	  mode: 'payment',
-	//   success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-	//   cancel_url: "http://localhost:3000/bill",
-	  success_url: "https://esociety-fdbd.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
-	  cancel_url: "https://esociety-fdbd.onrender.com/bill",
+	  success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
+	  cancel_url: "http://localhost:3000/bill",
+	//   success_url: "https://esociety-fdbd.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
+	//   cancel_url: "https://esociety-fdbd.onrender.com/bill",
 	});
   
 	res.json({ id: session.id });

@@ -14,7 +14,10 @@
           </div>
           <hr class="my-4" style="height: 3px; background-color:lightgreen; border-color:lightgreen ; border-radius:4px;">
           <div style="display: flex; justify-content: center">
-            <p style="color: gray;"><span style="font-weight: bold; color: gray;">Receipt </span> #<%= invoice %></p>
+            <p style="color: gray;"><span style="font-weight: bold; color: gray;">Transaction ID </span> #<%= invoice %></p>
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <p style="color: green; font-weight: bold;">Payment completed successfully!</p>
           </div>
           <div style="padding: 15px;font-size: 15px; font-family: sans-serif; padding-left: 0%">
             <div style="display: flex; justify-content: space-evenly">
@@ -32,12 +35,15 @@
       </div>
     </div>
   </div>
-  <div style="display: flex; justify-content: center ">
+  <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
     <button id="download-receipt" class="btn btn-info btn-md text-uppercase" style="border-radius:3rem; max-width:180px; margin-top: 40px;">
-      Download
+      Download Receipt
     </button>     
-    <a href="/bill#receipt" class="btn btn-primary btn-md text-uppercase" style="border-radius:3rem; max-width:180px; margin-top: 40px;">
-      View Receipt
+    <a href="/bill" class="btn btn-primary btn-md text-uppercase" style="border-radius:3rem; max-width:180px; margin-top: 40px;">
+      Back to Bill
+    </a>
+    <a href="/home" class="btn btn-success btn-md text-uppercase" style="border-radius:3rem; max-width:180px; margin-top: 40px;">
+      Go to Home
     </a>   
   </div>
 </div>
