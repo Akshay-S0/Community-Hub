@@ -4,6 +4,27 @@
   body {
     background-image: none;
   }
+  
+  @media print {
+    .btn, button {
+      display: none !important;
+    }
+    .advertisement {
+      display: none !important;
+    }
+    #navbar {
+      display: none !important;
+    }
+    body {
+      font-size: 12px;
+    }
+    .bill-content, .bill-header {
+      font-size: 11px;
+    }
+    .bill-content td, .bill-content th {
+      padding: 4px;
+    }
+  }
 </style>
 <div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:15px;">
   <div style="display: flex; justify-content: center ">
