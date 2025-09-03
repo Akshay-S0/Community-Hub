@@ -254,22 +254,29 @@ app.get("/bill", async (req,res) => {
                 totalMonth = date.monthDiff(dateFrom,dateToday) + 1;
             }
             
-            // Calculate monthly bill of society maintenance
-            const monthlyTotal = Object.values(foundSociety.maintenanceBill)
-                .filter(ele => typeof(ele)=='number')
-                .reduce((sum,ele) => sum+ele, 0);
+            // Calculate monthly bill of society maintenance (excluding squareFeetRate)
+            const monthlyTotal = foundSociety.maintenanceBill.societyCharges + 
+                                foundSociety.maintenanceBill.repairsAndMaintenance + 
+                                foundSociety.maintenanceBill.sinkingFund + 
+                                foundSociety.maintenanceBill.waterCharges + 
+                                foundSociety.maintenanceBill.insuranceCharges + 
+                                foundSociety.maintenanceBill.parkingCharges;
+            
+            // Add square feet charges to monthly total
+            const squareFeetCharges = foundUser.squareFeet * foundSociety.maintenanceBill.squareFeetRate;
+            const totalMonthlyWithSquareFeet = monthlyTotal + squareFeetCharges;
                 
             let credit = 0;
             let due = 0;
             if(totalMonth==0){
                 // Calculate credit balance
-                credit = monthlyTotal;
+                credit = totalMonthlyWithSquareFeet;
             }
             else if(totalMonth>1){
                 // Calculate pending due
-                due = (totalMonth-1)*monthlyTotal;
+                due = (totalMonth-1)*totalMonthlyWithSquareFeet;
             }
-            const totalAmount = monthlyTotal + due - credit;
+            const totalAmount = totalMonthlyWithSquareFeet + due - credit;
             
             // Fetch validated society residents for admin features
             const foundUsers = await user_collection.User.find({
@@ -294,7 +301,7 @@ app.get("/bill", async (req,res) => {
                 year: date.year,
                 receipt: foundUser.lastPayment,
                 societyResidents: foundUsers,
-                monthlyTotal: monthlyTotal
+                monthlyTotal: totalMonthlyWithSquareFeet
             });
         } catch(err) {
             console.error(err);
@@ -595,7 +602,8 @@ app.post("/editBill", (req,res) => {
                 sinkingFund: req.body.sinkingFund,
                 waterCharges: req.body.waterCharges,
                 insuranceCharges: req.body.insuranceCharges,
-                parkingCharges: req.body.parkingCharges
+                parkingCharges: req.body.parkingCharges,
+                squareFeetRate: parseFloat(req.body.squareFeetRate)
             }
         }}
     )
@@ -639,7 +647,8 @@ app.post("/editProfile", (req,res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             phoneNumber: req.body.phoneNumber,
-            flatNumber: req.body.flatNumber
+            flatNumber: req.body.flatNumber,
+            squareFeet: parseInt(req.body.squareFeet)
         }}
     )
         .then(() => {
@@ -682,6 +691,7 @@ app.post("/newRequest", (req,res) => {
                         phoneNumber: req.body.phoneNumber,
                         societyName: req.body.societyName,
                         flatNumber: req.body.flatNumber,
+                        squareFeet: parseInt(req.body.squareFeet),
                         validation: 'applied'
                     }}
                 )
@@ -722,7 +732,8 @@ app.post("/signup", async (req,res) => {
                     flatNumber: req.body.flatNumber,
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
-                    phoneNumber: req.body.phoneNumber
+                    phoneNumber: req.body.phoneNumber,
+                    squareFeet: parseInt(req.body.squareFeet)
                 },
                 req.body.password
             );
@@ -781,7 +792,8 @@ app.post("/register", async (req,res) => {
                     flatNumber: req.body.flatNumber,
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
-                    phoneNumber: req.body.phoneNumber
+                    phoneNumber: req.body.phoneNumber,
+                    squareFeet: parseInt(req.body.squareFeet)
                 },
                 req.body.password
             );

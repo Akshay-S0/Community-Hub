@@ -84,11 +84,16 @@
       </tr>
       <tr>
         <td>7</td>
+        <td>Area-based Charges (<%= resident.squareFeet %> sq ft × ₹<%= society.maintenanceBill.squareFeetRate %>)</td>
+        <td><%= (resident.squareFeet * society.maintenanceBill.squareFeetRate).toFixed(2) %></td>
+      </tr>
+      <tr>
+        <td>8</td>
         <td>Credit Balance</td>
         <td>- <%= creditBalance %></td>
       </tr>
       <tr>
-        <td>8</td>
+        <td>9</td>
         <td>Pending Due</td>
         <td><%= pendingDue %></td>
       </tr>
@@ -183,12 +188,15 @@
 					<% } %>
           <% let credit = 0; %>
 					<% let due = 0; %>
+					<% const residentSquareFeetCharges = resident.squareFeet * society.maintenanceBill.squareFeetRate; %>
+					<% const residentBaseMonthlyTotal = society.maintenanceBill.societyCharges + society.maintenanceBill.repairsAndMaintenance + society.maintenanceBill.sinkingFund + society.maintenanceBill.waterCharges + society.maintenanceBill.insuranceCharges + society.maintenanceBill.parkingCharges; %>
+					<% const residentMonthlyTotal = residentBaseMonthlyTotal + residentSquareFeetCharges; %>
 					<% if(totalMonth==0) { %>
-						<% credit = monthlyTotal; %>
+						<% credit = residentMonthlyTotal; %>
 					<% } else if(totalMonth>1) { %>
-						<% due =  (totalMonth-1)*monthlyTotal %>
+						<% due =  (totalMonth-1)*residentMonthlyTotal %>
 					<% } %>
-					<% const totalAmount = monthlyTotal + due - credit %>
+					<% const totalAmount = residentMonthlyTotal + due - credit %>
           <!-- Calculate resident payment status end-->
 
           <tr>

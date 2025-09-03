@@ -85,6 +85,10 @@ const societySchema = mongoose.Schema(
                 type: Number,
                 default: 150
             },
+            squareFeetRate: {
+                type: Number,
+                default: 1.5
+            },
         }
     },
     {

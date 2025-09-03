@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema (
 			type: Number,
 			required: true
 		},
+		squareFeet: {
+			type: Number,
+			required: true
+		},
 		complaints: Array,
 		lastPayment: {
 			date: Date,
