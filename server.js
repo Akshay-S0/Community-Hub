@@ -455,41 +455,50 @@ app.get("/editProfile", (req,res) => {
 })
 
 app.get('/success', async (req, res) => {
-    if(req.isAuthenticated() && req.user.validation=='approved'){
-        try {
-            console.log('Success route accessed');
-            console.log('Session ID:', req.query.session_id);
-            console.log('User ID:', req.user.id);
-            
-            const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-            
-            if (!session) {
-                throw new Error('Session not found');
-            }
-            
-            const foundUser = await user_collection.User.findOne({_id: req.user.id});
-            if (!foundUser) {
-                throw new Error('User not found');
-            }
-            
-            foundUser.lastPayment.date = new Date();
-            foundUser.lastPayment.amount = session.amount_total/100;
-            foundUser.lastPayment.invoice = session.id;
-            
-            await foundUser.save();
-            
-            const transactionDate = new Date().toLocaleString().split(', ')[0];
-            res.render("success", {
-                invoice: session.id,
-                amount: session.amount_total/100,
-                date: transactionDate
-            });
-        } catch(err) {
-            console.error('Payment success error:', err);
-            res.status(500).send("Server error: " + err.message);
+    try {
+        console.log('Success route accessed');
+        console.log('Session ID:', req.query.session_id);
+        console.log('Is authenticated:', req.isAuthenticated());
+        console.log('User:', req.user ? 'exists' : 'not found');
+        
+        if (!req.query.session_id) {
+            console.log('No session_id in query parameters');
+            return res.redirect("/bill");
         }
-    } else {
-        res.redirect("/login");
+        
+        const stripeSession = await stripe.checkout.sessions.retrieve(req.query.session_id);
+        
+        if (!stripeSession) {
+            throw new Error('Stripe session not found');
+        }
+        
+        console.log('Stripe session retrieved:', stripeSession.id);
+        console.log('Payment status:', stripeSession.payment_status);
+        
+        // If user is authenticated, update their payment record
+        if (req.isAuthenticated() && req.user && req.user.validation === 'approved') {
+            console.log('User is authenticated, updating payment record');
+            const foundUser = await user_collection.User.findOne({_id: req.user.id});
+            if (foundUser) {
+                foundUser.lastPayment.date = new Date();
+                foundUser.lastPayment.amount = stripeSession.amount_total/100;
+                foundUser.lastPayment.invoice = stripeSession.id;
+                await foundUser.save();
+                console.log('Payment record updated for user:', foundUser.username);
+            }
+        } else {
+            console.log('User not authenticated or not approved, showing success page without updating record');
+        }
+        
+        const transactionDate = new Date().toLocaleString().split(', ')[0];
+        res.render("success", {
+            invoice: stripeSession.id,
+            amount: stripeSession.amount_total/100,
+            date: transactionDate
+        });
+    } catch(err) {
+        console.error('Payment success error:', err);
+        res.status(500).send("Server error: " + err.message);
     }
 });
 
@@ -505,9 +514,22 @@ app.post('/checkout-session', async (req, res) => {
 		}
 
 		// Determine the base URL based on environment
-		const baseUrl = process.env.NODE_ENV === 'production' 
+		// Check for production environment or if running on Render
+		const isProduction = process.env.NODE_ENV === 'production' || 
+							process.env.RENDER || 
+							req.get('host')?.includes('onrender.com');
+		
+		const baseUrl = isProduction 
 			? 'https://community-hub-0dui.onrender.com' 
 			: 'http://localhost:3000';
+		
+		console.log('Environment check:', {
+			NODE_ENV: process.env.NODE_ENV,
+			RENDER: process.env.RENDER,
+			host: req.get('host'),
+			isProduction: isProduction,
+			baseUrl: baseUrl
+		});
 
 		const session = await stripe.checkout.sessions.create({
 		  payment_method_types: ['card'],

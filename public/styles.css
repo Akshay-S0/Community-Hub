@@ -3,6 +3,14 @@ body {
     font-family: sans-serif, Helvetica, Arial;
     background-image: url("https://www.transparenttextures.com/patterns/back-pattern.png");
 }
+
+/* Form pages background */
+body.form-page {
+    background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('images/watercolor-background.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+}
 #navlist{
     margin-left: 5px;
 }
@@ -23,7 +31,7 @@ section{
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    background: linear-gradient(rgba(255,255,255,0.1), rgba(5, 5, 5,1)), url('images/night.jpg');
+    background: linear-gradient(rgba(255,255,255,0.1), rgba(5, 5, 5,1)), url('images/gradient-background.jpg');
     background-size: cover;
 }
 .banner .content{
