@@ -506,7 +506,7 @@ app.post('/checkout-session', async (req, res) => {
 
 		// Determine the base URL based on environment
 		const baseUrl = process.env.NODE_ENV === 'production' 
-			? 'https://esociety-fdbd.onrender.com' 
+			? 'https://community-hub-0dui.onrender.com' 
 			: 'http://localhost:3000';
 
 		const session = await stripe.checkout.sessions.create({
