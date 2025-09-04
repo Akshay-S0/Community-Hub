@@ -457,6 +457,10 @@ app.get("/editProfile", (req,res) => {
 app.get('/success', async (req, res) => {
     if(req.isAuthenticated() && req.user.validation=='approved'){
         try {
+            console.log('Success route accessed');
+            console.log('Session ID:', req.query.session_id);
+            console.log('User ID:', req.user.id);
+            
             const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
             
             if (!session) {
@@ -490,30 +494,47 @@ app.get('/success', async (req, res) => {
 });
 
 app.post('/checkout-session', async (req, res) => {
-	const session = await stripe.checkout.sessions.create({
-	  payment_method_types: ['card'],
-	  line_items: [
-		{
-		  price_data: {
-			currency: 'inr',
-			product_data: {
-			  name: req.user.societyName,
-			  images: ['https://www.flaticon.com/svg/vstatic/svg/3800/3800518.svg?token=exp=1615226542~hmac=7b5bcc7eceab928716515ebf044f16cd'],
+	try {
+		console.log('Checkout session request received');
+		console.log('User:', req.user ? 'exists' : 'not found');
+		console.log('Payment amount:', req.user?.makePayment);
+		
+		if (!req.user || !req.user.makePayment) {
+			console.log('Error: User or payment amount missing');
+			return res.status(400).json({ error: 'User or payment amount not found' });
+		}
+
+		// Determine the base URL based on environment
+		const baseUrl = process.env.NODE_ENV === 'production' 
+			? 'https://esociety-fdbd.onrender.com' 
+			: 'http://localhost:3000';
+
+		const session = await stripe.checkout.sessions.create({
+		  payment_method_types: ['card'],
+		  line_items: [
+			{
+			  price_data: {
+				currency: 'inr',
+				product_data: {
+				  name: req.user.societyName,
+				  images: ['https://www.flaticon.com/svg/vstatic/svg/3800/3800518.svg?token=exp=1615226542~hmac=7b5bcc7eceab928716515ebf044f16cd'],
+				},
+				unit_amount: req.user.makePayment*100,
+			  },
+			  quantity: 1,
 			},
-			unit_amount: req.user.makePayment*100,
-		  },
-		  quantity: 1,
-		},
-	  ],
-	  mode: 'payment',
-	//   success_url: "http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}",
-	//   cancel_url: "http://localhost:3000/bill",
-	  success_url: "https://esociety-fdbd.onrender.com/success?session_id={CHECKOUT_SESSION_ID}",
-	  cancel_url: "https://esociety-fdbd.onrender.com/bill",
-	});
-  
-	res.json({ id: session.id });
-  });
+		  ],
+		  mode: 'payment',
+		  success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+		  cancel_url: `${baseUrl}/bill`,
+		});
+	  
+		res.json({ id: session.id });
+	} catch (error) {
+		console.error('Checkout session error:', error);
+		res.status(500).json({ error: 'Failed to create checkout session' });
+	}
+});
 
   app.post("/approveResident",(req,res) => {
 	const user_id = Object.keys(req.body.validate)[0]
