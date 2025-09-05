@@ -1,19 +1,22 @@
 <!-- Personal + Society information -->
 <%- include('partials/header') %>
 
-<row>
-  <col-4>
-      <a href="/editProfile" class="btn btn-danger btn-md text-uppercase center" style="border-radius:3rem; max-width:150px; display: block; margin: auto">
-        Edit Profile
-      </a>
-  </col-4>
-</row>
+<div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:14px;">
+  <div class="page-heading">
+    <span>Profile</span>
+  </div>
+  <row>
+    <col-4>
+        <a href="/editProfile" class="btn btn-danger btn-md text-uppercase center" style="border-radius:3rem; max-width:150px; display: block; margin: auto">
+          Edit Profile
+        </a>
+    </col-4>
+  </row>
 <div class="container container-profile">
   <div class="row">
     <div class="col">
       <div class="card card-profile my-5">
         <div class="card-body" style="padding:8%;">
-          <h1 style="text-align:left; font-size:20px; padding-left:30px">Profile</h1>
           <hr class="my-4" style="height: 3px; background-color:#d9534f; border-color:#d9534f ; border-radius:4px;">
           <div style="padding-left:25px; font-style:bold; color:rgb(139, 139, 139);">
               <b>Personal Information</b>
@@ -84,6 +87,7 @@
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <%- include('partials/footer') %>

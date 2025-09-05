@@ -1,8 +1,100 @@
 <!-- Maintenance Bill + Payment + Admin accounting section -->
 <%- include('partials/header') %>
 <style>
+  /* Cohesive Dark Theme */
   body {
     background-image: none;
+    /* Page header background: rgba(30, 41, 59, 0.9) - making body slightly darker */
+    background-color: #1a202c !important; /* Darker shade of the page header color */
+    color: #f0f0f0 !important; /* Off-white text for good readability */
+  }
+  
+  /* Enhanced card contrast for darker body background */
+  .content-card {
+    background: rgba(30, 41, 59, 0.95) !important; /* Slightly more opaque to stand out */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important; /* Stronger shadow for depth */
+  }
+  
+  .page-header {
+    background: rgba(30, 41, 59, 0.95) !important; /* Slightly more opaque to stand out */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important; /* Stronger shadow for depth */
+  }
+  
+  /* Ensure all text elements use consistent colors */
+  .content-card, .page-header {
+    color: #f0f0f0 !important;
+  }
+  
+  .content-card h1, .content-card h2, .content-card h3, .content-card h4, .content-card h5, .content-card h6,
+  .page-header h1, .page-header h2, .page-header h3, .page-header h4, .page-header h5, .page-header h6 {
+    color: #f1f5f9 !important; /* Bright white for headings */
+  }
+  
+  .content-card p, .page-header p, .card-description {
+    color: #cbd5e1 !important; /* Light gray for descriptions */
+  }
+  
+  /* Bill info grid styling */
+  .bill-info-grid {
+    margin-bottom: 2rem;
+  }
+  
+  .info-item {
+    background: rgba(51, 65, 85, 0.3);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+  }
+  
+  .info-item label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #cbd5e1;
+    margin-bottom: 0.25rem;
+  }
+  
+  .info-item .value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  
+  /* Override Bootstrap table styling for dark theme consistency */
+  .modern-table {
+    background-color: transparent !important;
+  }
+  
+  .modern-table .table-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-dark) !important;
+  }
+  
+  .modern-table .table-info {
+    background-color: var(--secondary-color) !important;
+    border-color: #0891b2 !important;
+  }
+  
+  .modern-table thead th {
+    color: white !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  .modern-table tbody td {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: transparent !important;
+  }
+  
+  .modern-table tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.1) !important;
+  }
+  
+  .modern-table tfoot td {
+    background-color: rgba(6, 182, 212, 0.9) !important;
+    color: white !important;
+    font-weight: 600;
+    border-top: 2px solid rgba(255, 255, 255, 0.2) !important;
   }
   
   @media print {
@@ -17,125 +109,182 @@
     }
     body {
       font-size: 12px;
+      background: white !important;
     }
-    .bill-content, .bill-header {
+    .bill-content, .bill-header, .bill-info-section {
       font-size: 11px;
+      background: white !important;
+      color: black !important;
     }
     .bill-content td, .bill-content th {
       padding: 4px;
+      color: black !important;
     }
   }
 </style>
-<div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:15px;">
-  <div style="display: flex; justify-content: center ">
-    <col-4>
-      <button id="download-btn" class="btn btn-info btn-md text-uppercase" style="border-radius:3rem; max-width:180px; ">
-        Download Bill
-      </button>
-      <button 
-      <% if(totalAmount==0){ %> 
-        disabled
-      <% } %>
-        id="checkout-button" class="btn btn-success btn-md text-uppercase" style="border-radius:3rem; max-width:180px; ">
-        Pay Bill
-      </button>     
-      <% if(resident.isAdmin){ %>
-      <a href="/editBill" class="btn btn-primary btn-md text-uppercase" style="border-radius:3rem; max-width:180px; ">
-        Edit Bill
-      </a>   
-      <% } %>
-    </col-4>
-  </div>
-  <br>
-  <div id="print-content">
-    <table class="bill-header">
-      <tr>
-        <td>
-          <p><%= society.societyName %></p>
-          <p><%= society.societyAddress.address %>, <%= society.societyAddress.city %>, 
-            <%= society.societyAddress.district %>-<%= society.societyAddress.postalCode %>
-          </p>
-        </td>
-      </tr>
-    </table>
-    <div style="padding: 10px 20px; display: flex; justify-content: space-between; border: 1px solid #ddd; border-bottom: none;  max-width: 1000px; margin: auto;">
-      <p>Bill No: <b>1301</b></p>
-      <p>For: <b><%= monthName %>, <%= year %></b></p>
-      <p>Date: <b><%= date %></b></p>
+<!-- Bill Page Container -->
+<div class="page-container">
+  <div class="container">
+    <div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:14px;">
+      <div class="page-heading">
+        <span>Maintenance Bill</span>
+      </div>
+    
+      <div class="container container-profile">
+        <row>
+          <col-4>
+            <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
+              <button id="download-btn" class="btn btn-pastel-info btn-modern">
+                <i class="fas fa-download me-2"></i>Download Bill
+              </button>
+              <button 
+                <% if(totalAmount==0){ %> 
+                  disabled title="No amount due" 
+                <% } %>
+                id="checkout-button" class="btn btn-pastel-success btn-modern <% if(totalAmount==0){ %>disabled<% } %>">
+                <i class="fas fa-credit-card me-2"></i>
+                <% if(totalAmount==0){ %>Paid<% } else { %>Pay ₹<%= totalAmount %><% } %>
+              </button>     
+              <% if(resident.isAdmin){ %>
+              <a href="/editBill" class="btn btn-pastel-warning btn-modern">
+                <i class="fas fa-edit me-2"></i>Edit Bill
+              </a>   
+              <% } %>
+            </div>
+          </col-4>
+        </row>
+  
+    <!-- Payment Status Alert -->
+    <div id="payment-status" class="mb-3" style="display: none;">
+      <div class="alert" role="alert" id="status-message"></div>
     </div>
-    <div style="padding: 0 20px; display: flex; justify-content: space-between; border: 1px solid #ddd;border-top: none; border-bottom: none;  max-width: 1000px; margin: auto;">
-      <p>Name: <b><%= resident.firstName %> <%= resident.lastName %></b></p>
-      <p>Flat: <b><%= resident.flatNumber %></b></p>
+    
+    <!-- Bill Details -->
+    <div class="content-card" id="print-content">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-building me-2 text-primary"></i><%= society.societyName %>
+        </h3>
+        <p class="card-description"><%= society.societyAddress.address %>, <%= society.societyAddress.city %>, <%= society.societyAddress.district %>-<%= society.societyAddress.postalCode %></p>
+      </div>
+      
+      <div class="bill-info-grid mb-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="info-item">
+              <label>Bill No:</label>
+              <span class="value">1301</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="info-item">
+              <label>For:</label>
+              <span class="value"><%= monthName %>, <%= year %></span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="info-item">
+              <label>Date:</label>
+              <span class="value"><%= date %></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-item">
+              <label>Name:</label>
+              <span class="value"><%= resident.firstName %> <%= resident.lastName %></span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-item">
+              <label>Flat:</label>
+              <span class="value"><%= resident.flatNumber %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bill Table -->
+      <div class="table-responsive">
+        <table class="table table-dark table-hover modern-table">
+          <thead class="table-primary">
+            <tr>
+              <th>Sr. No.</th>
+              <th>Particulars</th>
+              <th class="text-end">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Society Charges</td>
+              <td class="text-end"><%= society.maintenanceBill.societyCharges %></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Repairs and Maintenance</td>
+              <td class="text-end"><%= society.maintenanceBill.repairsAndMaintenance %></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Sinking Fund</td>
+              <td class="text-end"><%= society.maintenanceBill.sinkingFund %></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>Water Charges</td>
+              <td class="text-end"><%= society.maintenanceBill.waterCharges %></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>Insurance Charges</td>
+              <td class="text-end"><%= society.maintenanceBill.insuranceCharges %></td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>Parking Charges</td>
+              <td class="text-end"><%= society.maintenanceBill.parkingCharges %></td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td>Area-based Charges (<%= resident.squareFeet %> sq ft × ₹<%= society.maintenanceBill.squareFeetRate %>)</td>
+              <td class="text-end"><%= (resident.squareFeet * society.maintenanceBill.squareFeetRate).toFixed(2) %></td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td>Credit Balance</td>
+              <td class="text-end text-success">- <%= creditBalance %></td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td>Pending Due</td>
+              <td class="text-end text-warning"><%= pendingDue %></td>
+            </tr>
+          </tbody>
+          <tfoot class="table-info">
+            <tr>
+              <td></td>
+              <td><strong>Total Amount Due</strong></td>
+              <td class="text-end"><strong>₹<%= totalAmount %></strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
-    <table class="bill-content">
-      <tr>
-        <th>Sr. No.</th>
-        <th>Particulars</th>
-        <th>Amount</th>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td>Society Charges</td>
-        <td><%= society.maintenanceBill.societyCharges %></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>Repairs and Maintenance</td>
-        <td><%= society.maintenanceBill.repairsAndMaintenance %></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td>Sinking Fund</td>
-        <td><%= society.maintenanceBill.sinkingFund %></td>
-      </tr>
-      <tr>
-        <td>4</td>
-        <td>Water Charges</td>
-        <td><%= society.maintenanceBill.waterCharges %></td>
-      </tr>
-      <tr>
-        <td>5</td>
-        <td>Insurance Charges</td>
-        <td><%= society.maintenanceBill.insuranceCharges %></td>
-      </tr>
-      <tr>
-        <td>6</td>
-        <td>Parking Charges</td>
-        <td><%= society.maintenanceBill.parkingCharges %></td>
-      </tr>
-      <tr>
-        <td>7</td>
-        <td>Area-based Charges (<%= resident.squareFeet %> sq ft × ₹<%= society.maintenanceBill.squareFeetRate %>)</td>
-        <td><%= (resident.squareFeet * society.maintenanceBill.squareFeetRate).toFixed(2) %></td>
-      </tr>
-      <tr>
-        <td>8</td>
-        <td>Credit Balance</td>
-        <td>- <%= creditBalance %></td>
-      </tr>
-      <tr>
-        <td>9</td>
-        <td>Pending Due</td>
-        <td><%= pendingDue %></td>
-      </tr>
-      <tfoot>
-        <tr>
-          <td></td>
-          <td>Total Amount Due</td>
-          <td><%= totalAmount %></td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-  <br>
 
-  <% if(receipt.invoice){ %>
-  <hr class="my-4">
-  <div style="display: flex; justify-content: center ">
-    <button id="download-receipt" class="btn btn-info btn-md text-uppercase" style="border-radius:3rem; max-width:180px; margin: 0 0 30px;">
-      Download Receipt
-    </button>
-  </div>
+    <% if(receipt.invoice){ %>
+    <!-- Receipt Section -->
+    <div class="content-card mt-4">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-receipt me-2 text-success"></i>Payment Receipt
+        </h3>
+        <p class="card-description">Download your payment receipt</p>
+      </div>
+      
+      <div class="text-center mb-3">
+        <button id="download-receipt" class="btn btn-modern-info">
+          <i class="fas fa-download me-2"></i>Download Receipt
+        </button>
+      </div>
   <div id="receipt" style="background-color: rgba(128, 128, 128, 0.048); max-width: 1000px; margin: auto;">
     <table class="bill-header" style="border: 1px solid #ddd; border-bottom: none;">
       <tr>
@@ -159,7 +308,7 @@
     </div>
     <div  style="padding: 0 20px; display: flex; justify-content: space-between; border: 1px solid #ddd; border-top: none; border-bottom: none;  max-width: 1000px; margin: auto;">
       <p>Received with thanks from <%= resident.flatNumber %> - <%= resident.firstName %> <%= resident.lastName %>, 
-        the sum of rupees <span style="color: black;" id="words"></span style="color: black;"> on <%= date %> <%= receiptMonth %>, <%= year1 %>.
+        the sum of rupees <span style="color: white;" id="words"></span> on <%= date %> <%= receiptMonth %>, <%= year1 %>.
       </p>
     </div>
     <div style="padding: 20px 20px 10px; display: flex; justify-content: space-between; flex-direction: column; border: 1px solid #ddd; border-bottom: none; border-top: none;  max-width: 1000px; margin: auto;">
@@ -174,25 +323,31 @@
         <br>
         <p>Secretary/Treasurer</p>
       </div>
+      </div>
     </div>
-  </div>
-  <% } %>
+    <% } %>
 
-  <% if(resident.isAdmin){ %>
-    <hr class="my-4">
-    <br>
-    <h2 style="background-color:rgb(51, 51, 51); padding:16px;color:white; text-align: center; border-radius: 1rem; font-size: 20px; max-width: 1000px; margin:auto">
-      Accounting
-    </h2>
-    <br>
-    <div style="display: flex; justify-content: center ">
-      <table class="bill-content">
-        <tr>
-          <th>Resident</th>
-          <th>Flat</th>
-          <th>Status</th>
-          <th>Due</th>
-        </tr>
+    <% if(resident.isAdmin){ %>
+    <!-- Admin Accounting Section -->
+    <div class="content-card mt-4">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-chart-line me-2 text-success"></i>Accounting Overview
+        </h3>
+        <p class="card-description">Payment status overview for all residents</p>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table table-dark table-hover modern-table">
+          <thead class="table-primary">
+            <tr>
+              <th>Resident</th>
+              <th>Flat</th>
+              <th class="text-center">Status</th>
+              <th class="text-end">Due (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
         <% societyResidents.forEach((resident) => { %>
           <!-- Calculate resident payment status start -->
           <% function monthDiff(dateFrom, dateTo) { %>
@@ -220,49 +375,102 @@
 					<% const totalAmount = residentMonthlyTotal + due - credit %>
           <!-- Calculate resident payment status end-->
 
-          <tr>
-            <td><%= resident.firstName %> <%= resident.lastName %></td>
-            <td><%= resident.flatNumber %></td>
-            <% if(totalAmount==0){ %>
-              <td><i style="color: lightgreen;" class="fas fa-circle"></i></td>
-            <% } else { %>
-              <td><i style="color: lightcoral;" class="fas fa-circle"></i></td>
-            <% } %>
-            <td><%= totalAmount %></td>
-          </tr>
-        <% }) %>
-      </table>
+            <tr>
+              <td><%= resident.firstName %> <%= resident.lastName %></td>
+              <td><%= resident.flatNumber %></td>
+              <td class="text-center">
+                <% if(totalAmount==0){ %>
+                  <i class="fas fa-circle text-success" title="Paid"></i>
+                <% } else { %>
+                  <i class="fas fa-circle text-danger" title="Due"></i>
+                <% } %>
+              </td>
+              <td class="text-end"><%= totalAmount %></td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
     </div>
-  <% } %>
-</div>
+    <% } %>
+    </div>
+  </div><!-- /.container -->
+</div><!-- /.page-container -->
 
 <script type="text/javascript">
-  // Create an instance of the Stripe object with your publishable API key
-  var stripe = Stripe("<%= publishableKey %>");
-  var checkoutButton = document.getElementById("checkout-button");
+  // Check if publishableKey exists
+  <% if(typeof publishableKey !== 'undefined' && publishableKey) { %>
+    // Create an instance of the Stripe object with your publishable API key
+    var stripe = Stripe("<%= publishableKey %>");
+    var checkoutButton = document.getElementById("checkout-button");
+    var statusDiv = document.getElementById("payment-status");
+    var statusMessage = document.getElementById("status-message");
 
-  checkoutButton.addEventListener("click", function () {
-    fetch("/checkout-session", {
-      method: "POST",
-    })
+    function showStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = `alert modern-alert modern-alert-${type}`;
+      statusDiv.style.display = 'block';
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    checkoutButton.addEventListener("click", function () {
+      if (checkoutButton.disabled) {
+        showStatus('No amount due for payment.', 'info');
+        return;
+      }
+
+      // Show loading state
+      checkoutButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+      checkoutButton.disabled = true;
+
+      fetch("/checkout-session", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
       .then(function (response) {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
       })
       .then(function (session) {
+        if (session.error) {
+          throw new Error(session.error);
+        }
         return stripe.redirectToCheckout({ sessionId: session.id });
       })
       .then(function (result) {
-        // If redirectToCheckout fails due to a browser or network
-        // error, you should display the localized error message to your
-        // customer using error.message.
-        if (result.error) {
-          alert(result.error.message);
+        if (result && result.error) {
+          throw new Error(result.error.message);
         }
       })
       .catch(function (error) {
-        console.error("Error:", error);
+        console.error("Payment Error:", error);
+        showStatus(`Payment failed: ${error.message}. Please check your Stripe configuration or try again.`, 'error');
+        
+        // Reset button
+        checkoutButton.innerHTML = '<i class="fas fa-credit-card me-2"></i>Pay ₹<%= totalAmount %>';
+        checkoutButton.disabled = false;
       });
-  });
+    });
+  <% } else { %>
+    // Handle missing Stripe configuration
+    var checkoutButton = document.getElementById("checkout-button");
+    var statusDiv = document.getElementById("payment-status");
+    var statusMessage = document.getElementById("status-message");
+    
+    if (checkoutButton) {
+      checkoutButton.addEventListener("click", function () {
+        statusMessage.textContent = 'Payment system not configured. Please contact administrator to set up Stripe payment gateway.';
+        statusMessage.className = 'alert modern-alert modern-alert-warning';
+        statusDiv.style.display = 'block';
+      });
+    }
+  <% } %>
 </script>
 
 <script>

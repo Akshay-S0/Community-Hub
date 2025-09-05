@@ -63,7 +63,7 @@ app.get("/", async (req,res) => {
         
         res.render("index", {
             city: cityCount,
-            society: societies.length,
+            society: 1,
             user: foundUser.length,
             visit: pageVisit.count
         });
@@ -141,7 +141,7 @@ app.get("/logout", (req,res) => {
 })
 
 app.get("/loginFailure", (req,res) => {
-	const failureMessage = "Sorry, entered password was incorrect, Please double-check.";
+	const failureMessage = "Sorry, entered details were incorrect, Please double-check.";
 	const hrefLink = "/login";
 	const secondaryMessage = "Account not created?";
 	const hrefSecondaryLink = "/signup";
