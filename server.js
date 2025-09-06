@@ -5,6 +5,7 @@ const _ = require('lodash');
 const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo');
+const flash = require('connect-flash');
 const user_collection = require("./models/userModel");
 const society_collection = require("./models/societyModel");
 const visit_collection = require("./models/visitModel");
@@ -39,6 +40,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 db.connectDB()
 
 app.get("/", async (req,res) => {
@@ -74,13 +76,20 @@ app.get("/", async (req,res) => {
 });
 
 app.get("/login", (req,res) => {
-	res.render("login");
+	res.render("login", { 
+		errorMessage: req.flash('error'),
+		successMessage: req.flash('success')
+	});
 });
 
 app.get("/signup", (req,res) => {
     society_collection.Society.find()
         .then(societies => {
-            res.render("signup", {societies});
+            res.render("signup", {
+                societies: societies,
+                errorMessage: req.flash('error'),
+                successMessage: req.flash('success')
+            });
         })
         .catch(err => {
             console.error(err);
@@ -89,7 +98,10 @@ app.get("/signup", (req,res) => {
 });
 
 app.get("/register", (req,res) => {
-	res.render("register");
+	res.render("register", { 
+		errorMessage: req.flash('error'),
+		successMessage: req.flash('success')
+	});
 });
 
 app.get("/home", (req,res) => {
@@ -140,20 +152,6 @@ app.get("/logout", (req,res) => {
     });
 })
 
-app.get("/loginFailure", (req,res) => {
-	const failureMessage = "Sorry, entered details were incorrect, Please double-check.";
-	const hrefLink = "/login";
-	const secondaryMessage = "Account not created?";
-	const hrefSecondaryLink = "/signup";
-	const secondaryButton = "Create Account";
-	res.render("failure",{
-		message:failureMessage,
-		href:hrefLink,
-		messageSecondary:secondaryMessage,
-		hrefSecondary:hrefSecondaryLink,
-		buttonSecondary:secondaryButton
-	})
-});
 
 app.get("/residents", async (req,res) => {
     if(req.isAuthenticated() && req.user.validation=='approved'){
@@ -802,32 +800,29 @@ app.post("/signup", async (req,res) => {
             
             res.redirect("/home");
         } else {
-            const failureMessage = "Sorry, society is not registered, Please double-check society name.";
-            const hrefLink = "/signup";
-            const secondaryMessage = "Society not registered?";
-            const hrefSecondaryLink = "/register";
-            const secondaryButton = "Register Society";
-            res.render("failure", {
-                message: failureMessage,
-                href: hrefLink,
-                messageSecondary: secondaryMessage,
-                hrefSecondary: hrefSecondaryLink,
-                buttonSecondary: secondaryButton
+            const errorMsg = 'Society is not registered. Please double-check society name or register the society first.';
+            req.flash('error', errorMsg);
+            const societies = await society_collection.Society.find({}, 'societyName');
+            return res.render("signup", { 
+                societies: societies,
+                errorMessage: errorMsg,
+                successMessage: req.flash('success')
             });
         }
     } catch(err) {
         console.error(err);
-        const failureMessage = "Sorry, this email address is not available. Please choose a different address.";
-        const hrefLink = "/signup";
-        const secondaryMessage = "Society not registered?";
-        const hrefSecondaryLink = "/register";
-        const secondaryButton = "Register Society";
-        res.render("failure", {
-            message: failureMessage,
-            href: hrefLink,
-            messageSecondary: secondaryMessage,
-            hrefSecondary: hrefSecondaryLink,
-            buttonSecondary: secondaryButton
+        let errorMsg;
+        if (err.name === 'UserExistsError') {
+            errorMsg = 'This email address is already in use. Please choose a different email address.';
+        } else {
+            errorMsg = 'An error occurred during registration. Please try again.';
+        }
+        req.flash('error', errorMsg);
+        const societies = await society_collection.Society.find({}, 'societyName');
+        return res.render("signup", { 
+            societies: societies,
+            errorMessage: errorMsg,
+            successMessage: req.flash('success')
         });
     }
 });
@@ -875,29 +870,48 @@ app.post("/register", async (req,res) => {
             await society.save();
             res.redirect("/home");
         } else {
-            const failureMessage = "Sorry, society is already registered, Please double-check society name.";
-            const hrefLink = "/register";
-            const secondaryMessage = "Account not created?";
-            const hrefSecondaryLink = "/signup";
-            const secondaryButton = "Create Account";
-            res.render("failure", {
-                message: failureMessage,
-                href: hrefLink,
-                messageSecondary: secondaryMessage,
-                hrefSecondary: hrefSecondaryLink,
-                buttonSecondary: secondaryButton
+            const errorMsg = 'Society is already registered. Please double-check society name or try a different name.';
+            req.flash('error', errorMsg);
+            return res.render("register", { 
+                errorMessage: errorMsg,
+                successMessage: req.flash('success')
             });
         }
     } catch(err) {
         console.error(err);
-        res.redirect("/register");
+        let errorMsg;
+        if (err.name === 'UserExistsError') {
+            errorMsg = 'This email address is already in use. Please choose a different email address.';
+        } else {
+            errorMsg = 'An error occurred during society registration. Please try again.';
+        }
+        req.flash('error', errorMsg);
+        return res.render("register", { 
+            errorMessage: errorMsg,
+            successMessage: req.flash('success')
+        });
     }
 });
 
-app.post("/login", passport.authenticate("local", {
-	successRedirect: "/home",
-	failureRedirect: "/loginFailure"
-}));
+app.post("/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+        if (err) {
+            req.flash('error', 'An error occurred during login. Please try again.');
+            return res.redirect('/login');
+        }
+        if (!user) {
+            req.flash('error', 'Incorrect email or password. Please try again.');
+            return res.redirect('/login');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                req.flash('error', 'An error occurred during login. Please try again.');
+                return res.redirect('/login');
+            }
+            return res.redirect('/home');
+        });
+    })(req, res, next);
+});
 
 app.get("/health", (req, res) => {
     res.status(200).send("Server is running");

@@ -686,7 +686,92 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
     padding: 3rem 0 1rem;
-    margin-top: auto;
+    margin-top: auto; /* Ensure footer stays at bottom */
+    position: relative; /* Ensure proper positioning */
+    z-index: 1; /* Ensure footer is above other content */
+}
+
+/* Helpdesk Page Specific Styles */
+.main-flex-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-container {
+    flex: 1 0 auto;
+    padding: 2rem 0;
+}
+
+/* Ensure proper spacing for helpdesk content */
+.helpdesk-content {
+    min-height: 400px; /* Ensure minimum content height */
+}
+
+/* Empty state styling for helpdesk */
+.empty-state {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Responsive adjustments for helpdesk */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 1rem 0;
+    }
+    
+    .helpdesk-content {
+        min-height: 300px;
+    }
+    
+    .empty-state {
+        min-height: 250px;
+        padding: 1rem;
+    }
+}
+
+/* Ensure footer doesn't overlap content on very small screens */
+@media (max-width: 576px) {
+    .main-flex-wrapper {
+        min-height: 100vh;
+    }
+    
+    .page-container {
+        padding-bottom: 2rem; /* Extra padding to prevent overlap */
+    }
+    
+    footer {
+        padding: 2rem 0 1rem; /* Reduced padding on mobile */
+    }
+}
+
+/* Fix for pages with very little content - only apply to helpdesk pages */
+.helpdesk-page body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure proper spacing between content and footer */
+.content-card {
+    margin-bottom: 2rem;
+}
+
+/* Additional safety for footer positioning */
+.main-flex-wrapper {
+    position: relative;
+    min-height: 100vh;
+}
+
+footer {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .home-container {
@@ -2308,4 +2393,63 @@ tfoot td {
     }
 
     
+}
+
+/* Flash Message Styles */
+.flash-message {
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    animation: slideInDown 0.3s ease-out;
+}
+
+.flash-message.error {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.flash-message.success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+}
+
+.flash-message i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form Error States */
+.form-control.is-invalid {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+.form-control.is-invalid:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #dc2626;
 }

@@ -19,11 +19,44 @@
     flex-shrink: 0;
     width: 100%;
   }
+  
+  /* Enhanced responsive design */
+  @media (max-width: 768px) {
+    .page-container {
+      padding: 1rem 0;
+    }
+    .content-card {
+      margin: 0 0.5rem;
+    }
+    .resident-card {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  /* Ensure proper spacing for empty states */
+  .empty-state {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Better button styling */
+  .btn-modern-primary {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  }
+  
+  .btn-modern-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+  }
 </style>
 
-<div class="main-flex-wrapper">
+<div class="main-flex-wrapper helpdesk-page">
   <div class="page-container">
-    <div class="container">
+    <div class="container helpdesk-content">
       <div class="page-heading">
         <span><i class="fas fa-headset me-2"></i>Helpdesk</span>
       </div>
@@ -49,7 +82,7 @@
         <div class="row g-4">
           <% if(complaints.length === 0 || (complaints.length === 1 && complaints[0].category === 'You have not raised any complaint')) { %>
             <div class="col-12">
-              <div class="text-center py-5">
+              <div class="empty-state text-center py-5">
                 <i class="fas fa-ticket-alt fa-3x mb-3" style="color: #94a3b8;"></i>
                 <h5 style="color: #64748b;">No Complaints Raised</h5>
                 <p style="color: #94a3b8;">You haven't raised any complaints yet. Click the button above to submit your first complaint.</p>

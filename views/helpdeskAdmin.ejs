@@ -1,50 +1,110 @@
 <!-- View all complaints ~admin -->
 <%- include('partials/header') %>
 
-<div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:14px;">
-  <div class="page-heading">
-    <span>Helpdesk</span>
-  </div>
-  <div class="container container-profile">
-    <row>
-      <col-4>
-          <a href="/complaint" class="btn btn-pastel-warning btn-modern text-center d-block mx-auto" style="max-width: 200px; border-radius: 2rem;">
-            <i class="fas fa-exclamation-triangle me-2"></i>RAISE COMPLAINT
-          </a>
-      </col-4>
-    </row>
-    <div class="row">
-      <form action="/closeTicket" method="POST">
-        <% users.forEach((user) => { %>
-          <% let isUserTicketOpen = user.complaints.some(ticket => {if(ticket.status==='open') {return true}}) %>
-          <% if(isUserTicketOpen) { %>
-            <div class="col">
-              <div class="card card-profile my-5" style="margin-top: 10px;">
-                <div class="card-body" style="padding:3% 8% 3%;">
-                  <div>
-                    <% user.complaints.forEach((complaint,index) => { %>
-                      <% if(complaint.status==='open'){ %>
-                        <i class="fas fa-plus-circle"></i> <b><%= complaint.category %></b>
-                        <p style="padding-left: 20px; color: grey;">
-                          <%= complaint.date %> - <%= complaint.type %><br>
-                          Raised by <%=user.firstName%> <%=user.lastName%> - <%=user.flatNumber%>
-                        </p>
-                        <p style="padding-left: 20px"><%= complaint.description %></p>
-                        <button type="submit" name=ticket[<%= user._id %>] value="<%= index %>" class="btn btn-success btn-sm" style="margin-top:0; margin-left:20px;">Close Ticket</button>
-                        <% if(user.complaints[index+1]){ %>
-                          <hr class="my-4">
-                        <% } %>
-                      <% } %>
-                    <% }) %>
-                  </div>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .main-flex-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .page-container {
+    flex: 1 0 auto;
+    padding: 2rem 0;
+  }
+  footer {
+    flex-shrink: 0;
+    width: 100%;
+  }
+  .helpdesk-admin-content {
+    padding: 4%;
+    padding-top: 0%;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+  .no-complaints-message {
+    text-align: center;
+    padding: 3rem 0;
+    color: #64748b;
+  }
+  .no-complaints-message i {
+    font-size: 3rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+</style>
+
+<div class="main-flex-wrapper helpdesk-page">
+  <div class="page-container">
+    <div class="helpdesk-admin-content helpdesk-content">
+      <div class="page-heading">
+        <span><i class="fas fa-headset me-2"></i>Helpdesk Admin</span>
+      </div>
+      
+      <div class="container container-profile">
+        <div class="row mb-4">
+          <div class="col-12 text-center">
+            <a href="/complaint" class="btn btn-pastel-warning btn-modern" style="max-width: 200px; border-radius: 2rem;">
+              <i class="fas fa-exclamation-triangle me-2"></i>RAISE COMPLAINT
+            </a>
+          </div>
+        </div>
+        
+        <div class="row">
+          <form action="/closeTicket" method="POST">
+            <% 
+              let hasOpenTickets = false;
+              users.forEach((user) => {
+                let isUserTicketOpen = user.complaints.some(ticket => ticket.status === 'open');
+                if(isUserTicketOpen) hasOpenTickets = true;
+              });
+            %>
+            
+            <% if(!hasOpenTickets) { %>
+              <div class="col-12">
+                <div class="no-complaints-message">
+                  <i class="fas fa-check-circle"></i>
+                  <h5>All Tickets Resolved</h5>
+                  <p>There are currently no open complaints to review.</p>
                 </div>
               </div>
-            </div>
-          <% } %>
-        <% }) %>
-      </form>
-    </div>    
+            <% } else { %>
+              <% users.forEach((user) => { %>
+                <% let isUserTicketOpen = user.complaints.some(ticket => {if(ticket.status==='open') {return true}}) %>
+                <% if(isUserTicketOpen) { %>
+                  <div class="col">
+                    <div class="card card-profile my-5" style="margin-top: 10px;">
+                      <div class="card-body" style="padding:3% 8% 3%;">
+                        <div>
+                          <% user.complaints.forEach((complaint,index) => { %>
+                            <% if(complaint.status==='open'){ %>
+                              <i class="fas fa-plus-circle"></i> <b><%= complaint.category %></b>
+                              <p style="padding-left: 20px; color: grey;">
+                                <%= complaint.date %> - <%= complaint.type %><br>
+                                Raised by <%=user.firstName%> <%=user.lastName%> - <%=user.flatNumber%>
+                              </p>
+                              <p style="padding-left: 20px"><%= complaint.description %></p>
+                              <button type="submit" name=ticket[<%= user._id %>] value="<%= index %>" class="btn btn-success btn-sm" style="margin-top:0; margin-left:20px;">Close Ticket</button>
+                              <% if(user.complaints[index+1]){ %>
+                                <hr class="my-4">
+                              <% } %>
+                            <% } %>
+                          <% }) %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+              <% }) %>
+            <% } %>
+          </form>
+        </div>    
+      </div>
+    </div>
   </div>
+  <%- include('partials/footer') %>
 </div>
-
-<%- include('partials/footer') %>
