@@ -1,93 +1,126 @@
-<!-- Personal + Society information -->
 <%- include('partials/header') %>
 
-<div style="padding:4%; padding-top: 0%; font-family:sans-serif; font-size:14px;">
-  <div class="page-heading">
-    <span>Profile</span>
-  </div>
-  <row>
-    <col-4>
-        <a href="/editProfile" class="btn btn-danger btn-md text-uppercase center" style="border-radius:3rem; max-width:150px; display: block; margin: auto">
-          Edit Profile
-        </a>
-    </col-4>
-  </row>
-<div class="container container-profile">
-  <div class="row">
-    <div class="col">
-      <div class="card card-profile my-5">
-        <div class="card-body" style="padding:8%;">
-          <hr class="my-4" style="height: 3px; background-color:#d9534f; border-color:#d9534f ; border-radius:4px;">
-          <div style="padding-left:25px; font-style:bold; color:rgb(139, 139, 139);">
-              <b>Personal Information</b>
+<div class="page-container">
+  <div class="container">
+    <div class="page-heading">
+      <span>Profile</span>
+    </div>
+    
+    <!-- Edit Profile Button -->
+    <div class="d-flex justify-content-center mb-4">
+      <a href="/editProfile" class="btn btn-primary">
+        <i class="fas fa-edit me-2"></i>Edit Profile
+      </a>
+    </div>
+
+    <!-- Personal Information Section -->
+    <div class="content-card mb-4">
+      <div class="card-header">
+        <div class="card-title d-flex align-items-center">
+          <i class="fas fa-user me-2" style="color: #3b82f6;"></i>
+          <span>Personal Information</span>
+        </div>
+        <p class="card-description mb-0">Your personal details and contact information</p>
+      </div>
+      
+      <div class="profile-details">
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-signature text-primary"></i>
+            <span>Name</span>
           </div>
-          <div style="padding: 15px;font-size: 15px; font-family: sans-serif; padding-left: 0%">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px">
-              <div class="col-sm-6 col-lg-4"> Name :</div>
-              <div class="col-sm-6 col-lg-8">
-                <span class="profile-text"><%= resident.firstName %> <%= resident.lastName %></span>
-              </div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px;margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4"> Phone :</div>
-              <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= resident.phoneNumber %></span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px;margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4"> Flat :</div>
-              <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= resident.flatNumber %></span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px;margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4"> House Area :</div>
-              <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= resident.squareFeet %> sq ft</span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px;margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4"> Email ID :</div>
-              <div class="col-sm-6 col-lg-8">
-                <span class="profile-text" style="text-align:justify; word-break:break-all"><%= resident.username %></span>
-              </div>
-            </div>
+          <div class="profile-value"><%= resident.firstName %> <%= resident.lastName %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-phone text-primary"></i>
+            <span>Phone</span>
           </div>
-          <hr class="my-4" style="height: 3px; background-color:#c2c2c2; border-color:#c2c2c2 ; border-radius:2px;">
-          <div style="padding-left:25px; padding-top:10px; font-style:bold; color:rgb(139, 139, 139);">
-            <b>Society Information</b>
+          <div class="profile-value"><%= resident.phoneNumber %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-home text-primary"></i>
+            <span>Flat Number</span>
           </div>
-          <div style="padding-top: 15px;font-size: 15px; font-family: sans-serif; padding-left: 0%;  ">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4"> Society Name :</div>
-              <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= society.societyName %></span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px;">
-              <div class="col-sm-6 col-lg-4">Address :</div>
-              <div class="col-sm-6 col-lg-8 " style="text-align: justify; word-break:keep-all; margin-left: 0%;">
-                <span class="profile-text"> <%= society.societyAddress.address %></span>
-              </div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px;">
-                <div class="col-sm-6 col-lg-4">City :</div>
-                <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= society.societyAddress.city %></span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px;">
-                <div class="col-sm-6 col-lg-4"> District :</div>
-                <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= society.societyAddress.district %></span></div>
-            </div>
-            <hr class="my-4">
-            <div class=row style="margin: 13px; margin-bottom:0px;margin-top:0px;">
-                <div class="col-sm-6 col-lg-4"> Postal Code :</div>
-                <div class="col-sm-6 col-lg-8"><span class="profile-text"><%= society.societyAddress.postalCode %></span></div>
-            </div>
+          <div class="profile-value">
+            <span class="flat-number-badge"><%= resident.flatNumber %></span>
           </div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-ruler-combined text-primary"></i>
+            <span>House Area</span>
+          </div>
+          <div class="profile-value"><%= resident.squareFeet %> sq ft</div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-envelope text-primary"></i>
+            <span>Email ID</span>
+          </div>
+          <div class="profile-value" style="word-break: break-all;"><%= resident.username %></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Society Information Section -->
+    <div class="content-card">
+      <div class="card-header">
+        <div class="card-title d-flex align-items-center">
+          <i class="fas fa-building me-2" style="color: #10b981;"></i>
+          <span>Society Information</span>
+        </div>
+        <p class="card-description mb-0">Details about your residential community</p>
+      </div>
+      
+      <div class="profile-details">
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-building text-success"></i>
+            <span>Society Name</span>
+          </div>
+          <div class="profile-value"><%= society.societyName %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-map-marker-alt text-success"></i>
+            <span>Address</span>
+          </div>
+          <div class="profile-value"><%= society.societyAddress.address %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-city text-success"></i>
+            <span>City</span>
+          </div>
+          <div class="profile-value"><%= society.societyAddress.city %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-map text-success"></i>
+            <span>District</span>
+          </div>
+          <div class="profile-value"><%= society.societyAddress.district %></div>
+        </div>
+        
+        <div class="profile-item">
+          <div class="profile-label">
+            <i class="fas fa-mail-bulk text-success"></i>
+            <span>Postal Code</span>
+          </div>
+          <div class="profile-value"><%= society.societyAddress.postalCode %></div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 
 <%- include('partials/footer') %>

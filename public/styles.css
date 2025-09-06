@@ -44,18 +44,10 @@ body {
     line-height: 1.6;
     color: var(--text-primary);
     background: var(--gradient-background);
-    background-size: 400% 400%;
     background-attachment: fixed;
-    animation: gradientMove 15s ease infinite;
     overflow-x: hidden;
     padding-top: 0; /* Reset any default padding */
     min-height: 100vh;
-}
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
 /* Ensure proper spacing for pages with fixed navbar - Removed padding to eliminate gap */
@@ -86,22 +78,11 @@ html {
 
 .brand-text {
     background: linear-gradient(45deg, #60a5fa, #34d399, #a78bfa);
-    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
-    animation: brandGradient 3s ease-in-out infinite;
     text-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-}
-
-@keyframes brandGradient {
-    0%, 100% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
 }
 
 .navbar-nav .nav-link {
@@ -891,9 +872,18 @@ footer {
     pointer-events: none;
 }
 
-/* Smooth transitions for all interactive elements */
+/* Text muted color fix - make it white for better visibility */
+.text-muted {
+    color: #ffffff !important;
+}
+
+h6.text-muted {
+    color: #ffffff !important;
+}
+
+/* Disable transitions for consistency across devices */
 a, button, .btn, .card, .feature-card, .stat-card {
-    transition: var(--transition);
+    transition: none !important;
 }
 
 /* Focus styles for accessibility */
@@ -938,46 +928,17 @@ button:focus,
     margin-top: 0.5rem;
 }
 
-/* Modern Professional Hero Title Animation */
+/* Static Hero Title - No animations for consistency */
 .hero-title {
-    animation: fadeInUp 1s ease-out;
     transform: translateY(0);
     opacity: 1;
 }
 
 .hero-title .text-primary {
-    background: linear-gradient(45deg, #60a5fa, #34d399, #a78bfa, #60a5fa);
-    background-size: 300% 300%;
+    background: linear-gradient(45deg, #60a5fa, #34d399);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradientShift 3s ease-in-out infinite;
-}
-
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes gradientShift {
-    0%, 100% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-}
-
-/* Add subtle glow effect on hover */
-.hero-title:hover .text-primary {
-    text-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
-    transition: text-shadow 0.3s ease;
 }
 
 /* Modern Dashboard Styles */
@@ -2101,24 +2062,11 @@ tfoot td {
     justify-content: center;
     margin: 0 auto 1.5rem;
     box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-    animation: pulse 2s infinite;
 }
 
 .failure-icon i {
     font-size: 2.5rem;
     color: white;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-    }
-    50% {
-        box-shadow: 0 15px 40px rgba(255, 107, 107, 0.5);
-    }
-    100% {
-        box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
-    }
 }
 
 .failure-title {
@@ -2219,7 +2167,6 @@ tfoot td {
     position: absolute;
     border-radius: 50%;
     opacity: 0.1;
-    animation: float 6s ease-in-out infinite;
 }
 
 .floating-shape.shape-1 {
@@ -2228,7 +2175,6 @@ tfoot td {
     background: var(--primary-color);
     top: 20%;
     right: 10%;
-    animation-delay: 0s;
 }
 
 .floating-shape.shape-2 {
@@ -2237,7 +2183,6 @@ tfoot td {
     background: var(--secondary-color);
     bottom: 20%;
     left: 15%;
-    animation-delay: 2s;
 }
 
 .floating-shape.shape-3 {
@@ -2246,16 +2191,6 @@ tfoot td {
     background: var(--accent-color);
     top: 60%;
     right: 20%;
-    animation-delay: 4s;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
 }
 
 /* Fade in animation */
@@ -2318,4 +2253,59 @@ tfoot td {
     .error-text {
         text-align: center;
     }
+}
+
+/* Profile Page Styles */
+.profile-details {
+    padding: 1.5rem;
+}
+
+.profile-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-item:last-child {
+    border-bottom: none;
+}
+
+.profile-label {
+    flex: 0 0 220px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.profile-label i {
+    width: 20px;
+    margin-right: 0.75rem;
+    text-align: center;
+}
+
+.profile-value {
+    flex: 1;
+    font-weight: 500;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+/* Responsive Profile Styles */
+@media (max-width: 768px) {
+    .profile-item {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .profile-label {
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-value {
+        padding-left: 2rem;
+    }
+
+    
 }

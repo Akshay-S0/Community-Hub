@@ -124,35 +124,71 @@ window.onload = function () {
                     // Clean up the cloned content for PDF
                     const elementsToStyle = clonedContent.querySelectorAll('*');
                     elementsToStyle.forEach(el => {
-                        // Remove problematic styles
+                        // Remove ALL problematic styles
                         el.style.removeProperty('background-image');
                         el.style.removeProperty('box-shadow');
                         el.style.removeProperty('backdrop-filter');
                         el.style.removeProperty('border-radius');
+                        el.style.removeProperty('text-shadow');
+                        el.style.removeProperty('opacity');
+                        el.style.removeProperty('filter');
                         
-                        // Set text colors to black for PDF
-                        if (el.style.color && el.style.color.includes('rgb')) {
-                            el.style.color = 'black';
+                        // Force black text color for ALL elements
+                        el.style.color = '#000000 !important';
+                        el.style.setProperty('color', '#000000', 'important');
+                        
+                        // Remove any CSS classes that might affect visibility
+                        if (el.classList.contains('text-white')) {
+                            el.classList.remove('text-white');
+                        }
+                        if (el.classList.contains('text-light')) {
+                            el.classList.remove('text-light');
+                        }
+                        if (el.classList.contains('text-muted')) {
+                            el.classList.remove('text-muted');
                         }
                         
-                        // Handle specific elements
+                        // Handle specific elements with explicit styling
                         if (el.classList.contains('content-card')) {
-                            el.style.cssText = 'background: white; color: black; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px;';
+                            el.style.cssText = 'background: white !important; color: #000000 !important; border: 2px solid #333 !important; padding: 15px !important; margin-bottom: 10px !important;';
                         }
                         if (el.classList.contains('card-header')) {
-                            el.style.cssText = 'background: #f8f9fa; color: black; padding: 10px; border-bottom: 1px solid #ddd; margin-bottom: 15px;';
+                            el.style.cssText = 'background: #f0f0f0 !important; color: #000000 !important; padding: 10px !important; border-bottom: 2px solid #333 !important; margin-bottom: 15px !important; font-weight: bold !important;';
                         }
                         if (el.classList.contains('table')) {
-                            el.style.cssText = 'width: 100%; border-collapse: collapse; color: black;';
+                            el.style.cssText = 'width: 100% !important; border-collapse: collapse !important; color: #000000 !important; border: 2px solid #333 !important;';
                         }
                         if (el.tagName === 'TH') {
-                            el.style.cssText = 'background: #e9ecef; color: black; padding: 8px; border: 1px solid #ddd; font-weight: bold;';
+                            el.style.cssText = 'background: #d0d0d0 !important; color: #000000 !important; padding: 10px !important; border: 1px solid #333 !important; font-weight: bold !important; text-align: left !important;';
                         }
                         if (el.tagName === 'TD') {
-                            el.style.cssText = 'padding: 6px 8px; border: 1px solid #ddd; color: black;';
+                            el.style.cssText = 'padding: 8px 10px !important; border: 1px solid #333 !important; color: #000000 !important; background: white !important;';
                         }
                         if (el.classList.contains('info-item')) {
-                            el.style.cssText = 'background: #f8f9fa; color: black; padding: 8px; border: 1px solid #ddd; margin-bottom: 5px;';
+                            el.style.cssText = 'background: #f5f5f5 !important; color: #000000 !important; padding: 10px !important; border: 1px solid #333 !important; margin-bottom: 8px !important;';
+                        }
+                        if (el.classList.contains('card-title')) {
+                            el.style.cssText = 'color: #000000 !important; font-weight: bold !important; font-size: 18px !important;';
+                        }
+                        if (el.classList.contains('card-description')) {
+                            el.style.cssText = 'color: #333333 !important; font-size: 14px !important;';
+                        }
+                        if (el.classList.contains('value')) {
+                            el.style.cssText = 'color: #000000 !important; font-weight: bold !important;';
+                        }
+                        if (el.tagName === 'LABEL') {
+                            el.style.cssText = 'color: #000000 !important; font-weight: normal !important;';
+                        }
+                        
+                        // Ensure headings are visible
+                        if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(el.tagName)) {
+                            el.style.cssText = 'color: #000000 !important; font-weight: bold !important;';
+                        }
+                        
+                        // Handle paragraphs and spans
+                        if (['P', 'SPAN', 'DIV'].includes(el.tagName)) {
+                            el.style.color = '#000000';
+                            el.style.setProperty('color', '#000000', 'important');
                         }
                     });
                     
