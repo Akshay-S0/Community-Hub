@@ -1,59 +1,5 @@
 <%- include('partials/header') %>
 
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
-  .main-flex-wrapper {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .page-container {
-    flex: 1 0 auto;
-    padding: 2rem 0;
-  }
-  footer {
-    flex-shrink: 0;
-    width: 100%;
-  }
-  
-  /* Enhanced responsive design */
-  @media (max-width: 768px) {
-    .page-container {
-      padding: 1rem 0;
-    }
-    .content-card {
-      margin: 0 0.5rem;
-    }
-    .resident-card {
-      margin-bottom: 1rem;
-    }
-  }
-  
-  /* Ensure proper spacing for empty states */
-  .empty-state {
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Better button styling */
-  .btn-modern-primary {
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-  }
-  
-  .btn-modern-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-  }
-</style>
-
 <div class="main-flex-wrapper helpdesk-page">
   <div class="page-container">
     <div class="container helpdesk-content">

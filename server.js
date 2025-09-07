@@ -731,6 +731,45 @@ app.post("/editProfile", (req,res) => {
         });
 });
 
+// Mark bill as paid route
+app.post("/mark-bill-paid", async (req, res) => {
+    try {
+        if (!req.isAuthenticated() || req.user.validation !== 'approved') {
+            return res.status(401).json({ success: false, error: 'User not authenticated or not approved' });
+        }
+
+        const { amount, date } = req.body;
+        
+        if (!amount || !date) {
+            return res.status(400).json({ success: false, error: 'Amount and date are required' });
+        }
+
+        // Update user's last payment record
+        const updatedUser = await user_collection.User.findByIdAndUpdate(
+            req.user.id,
+            {
+                $set: {
+                    lastPayment: {
+                        date: new Date(date),
+                        amount: parseFloat(amount),
+                        invoice: `MANUAL_${Date.now()}`
+                    }
+                }
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        res.json({ success: true, message: 'Bill marked as paid successfully' });
+    } catch (error) {
+        console.error('Error marking bill as paid:', error);
+        res.status(500).json({ success: false, error: 'Server error' });
+    }
+});
+
 app.post("/newRequest", (req,res) => {
     // Submit new signup only if society exists
     society_collection.Society.findOne({societyName: req.body.societyName})

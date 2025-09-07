@@ -121,6 +121,12 @@ window.onload = function () {
                     // Clone the content and apply print-friendly styles
                     const clonedContent = invoice.cloneNode(true);
                     
+                    // Hide action buttons container during PDF generation
+                    const actionButtons = clonedContent.querySelector('.d-flex.gap-3.justify-content-center.mt-4');
+                    if (actionButtons) {
+                        actionButtons.style.display = 'none';
+                    }
+                    
                     // Clean up the cloned content for PDF
                     const elementsToStyle = clonedContent.querySelectorAll('*');
                     elementsToStyle.forEach(el => {

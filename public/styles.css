@@ -1961,6 +1961,199 @@ button:focus,
     padding: 1rem 0;
 }
 
+/* Bill page specific styles */
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: var(--transition);
+}
+
+.info-item:hover {
+    background: rgba(241, 245, 249, 0.9);
+    border-color: var(--primary-color);
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #000000;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.info-item .value {
+    font-weight: 500;
+    color: #000000;
+    text-align: right;
+}
+
+/* Bill table enhancements */
+.modern-table tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+}
+
+.modern-table tfoot tr {
+    background: linear-gradient(135deg, #1e293b 0%, #374151 100%);
+    color: white;
+    font-weight: 700;
+}
+
+.modern-table tfoot td {
+    border: none;
+    padding: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Payment status alert */
+.alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border: 1px solid #10b981;
+    color: #065f46;
+    border-radius: var(--border-radius-lg);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+    border-radius: var(--border-radius-lg);
+}
+
+/* Modal enhancements */
+.modal-content {
+    border-radius: var(--border-radius-lg);
+    border: none;
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+    background: var(--gradient-primary);
+    color: white;
+    border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    border-bottom: none;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+/* Button enhancements for bill page */
+.btn-modern-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-modern-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+/* Pay Bill button enhancements */
+.btn-pastel-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-pastel-success:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.btn-pastel-success:disabled {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: #d1d5db;
+    cursor: not-allowed;
+    box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
+    transform: none;
+}
+
+/* Edit Bill button enhancements */
+.btn-pastel-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-pastel-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+/* Print styles - hide elements that shouldn't appear in PDF */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
+
+/* Responsive bill page */
+@media (max-width: 768px) {
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .info-item .value {
+        text-align: left;
+    }
+    
+    .d-flex.gap-3 {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .d-flex.gap-3 .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
 /* Residents Page */
 .flex-container {
     display: flex;
@@ -2453,3 +2646,120 @@ tfoot td {
     font-size: 0.875rem;
     color: #dc2626;
 }
+/* ============================
+   Helpdesk Admin Page Styles
+   ============================ */
+
+   .main-flex-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .page-container {
+    flex: 1 0 auto;
+    padding: 2rem 0;
+  }
+  
+  footer {
+    flex-shrink: 0;
+    width: 100%;
+  }
+  
+  .helpdesk-admin-content {
+    padding: 4%;
+    padding-top: 0%;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+  
+  /* No Complaints Section */
+  .no-complaints-message {
+    text-align: center;
+    padding: 3rem 0;
+    color: #64748b;
+  }
+  .no-complaints-message i {
+    font-size: 3rem;
+    color: #94a3b8;
+    margin-bottom: 1rem;
+  }
+  
+  /* Raise Complaint Button */
+  .raise-complaint-btn {
+    display: inline-block;
+    max-width: 220px;
+    border-radius: 2rem;
+    background: linear-gradient(135deg, #f97316, #ea580c); /* orange gradient */
+    color: #fff;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .raise-complaint-btn:hover {
+    background: linear-gradient(135deg, #ea580c, #c2410c);
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Complaint Ticket Card */
+  .ticket-card {
+    margin-top: 20px;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.12);
+  }
+  
+  .ticket-card-body {
+    padding: 1.5rem 2rem;
+  }
+  
+  .ticket-card-body i {
+    color: #2563eb; /* blue accent for icon */
+    margin-right: 0.5rem;
+  }
+  
+  /* Complaint Meta */
+  .complaint-meta {
+    padding-left: 5px;
+    margin-top: 5px;
+    color: #6b7280; /* gray-500 */
+    font-size: 0.9rem;
+  }
+  
+  /* Complaint Description */
+  .complaint-description {
+    margin-top: 0.5rem;
+    padding-left: 5px;
+    font-size: 1rem;
+    color: #374151; /* gray-700 */
+    line-height: 1.4;
+  }
+  
+  /* Close Ticket Button */
+  .close-ticket-btn {
+    margin-top: 10px;
+    border-radius: 0.5rem;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #10b981; /* green-500 */
+    color: #fff;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .close-ticket-btn:hover {
+    background-color: #059669; /* green-600 */
+    transform: translateY(-2px);
+  }
+  
