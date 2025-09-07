@@ -146,6 +146,91 @@
         <% } %>
       </div>
     </div>
+
+    <!-- Accounting Section (Admin Only) -->
+    <% if (resident.isAdmin) { %>
+    <div class="content-card mt-4">
+      <div class="card-header">
+        <div class="card-title d-flex align-items-center">
+          <i class="fas fa-chart-line me-2" style="color: #3b82f6;"></i>
+          <span>Accounting Overview</span>
+        </div>
+        <p class="card-description mb-0">Payment status of all residents</p>
+      </div>
+
+      <div class="accounting-table-container" style="display: flex; justify-content: center; overflow-x: auto;">
+        <table class="table table-bordered modern-table" style="min-width: 600px;">
+          <thead>
+            <tr>
+              <th>Resident</th>
+              <th>Flat</th>
+              <th>Status</th>
+              <th>Amount Due</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% societyResidents.forEach((resident) => { %>
+              <!-- Calculate resident payment status start -->
+              <% function monthDiff(dateFrom, dateTo) { %>
+                <% return dateTo.getMonth() - dateFrom.getMonth() + (12 * (dateTo.getFullYear() - dateFrom.getFullYear())) %>
+              <% } %>
+              <% const dateToday = new Date(); %>
+              <% let totalMonth = 0  %>
+              <% let dateFrom = resident.createdAt; %>
+              <% if(resident.lastPayment && resident.lastPayment.date){ %>
+                <% dateFrom = resident.lastPayment.date; %>
+                <% totalMonth = monthDiff(dateFrom,dateToday) %>
+              <% } else { %>
+                <% totalMonth = monthDiff(dateFrom,dateToday) + 1 %>
+              <% } %>
+              <!-- Calculate monthly bill of society maintenance (excluding squareFeetRate) -->
+              <% const monthlyTotal = society.maintenanceBill.societyCharges + 
+                                    society.maintenanceBill.repairsAndMaintenance + 
+                                    society.maintenanceBill.sinkingFund + 
+                                    society.maintenanceBill.waterCharges + 
+                                    society.maintenanceBill.insuranceCharges + 
+                                    society.maintenanceBill.parkingCharges; %>
+              
+              <!-- Add square feet charges to monthly total -->
+              <% const squareFeetCharges = resident.squareFeet * society.maintenanceBill.squareFeetRate; %>
+              <% const totalMonthlyWithSquareFeet = monthlyTotal + squareFeetCharges; %>
+              
+              <% let credit = 0; %>
+              <% let due = 0; %>
+              <% if(totalMonth==0) { %>
+                <% credit = totalMonthlyWithSquareFeet; %>
+              <% } else if(totalMonth>1) { %>
+                <% due = (totalMonth-1) * totalMonthlyWithSquareFeet; %>
+              <% } %>
+              <% const totalAmount = totalMonthlyWithSquareFeet + due - credit %>
+              <!-- Calculate resident payment status end-->
+
+              <tr>
+                <td><%= resident.firstName %> <%= resident.lastName %></td>
+                <td><%= resident.flatNumber %></td>
+                <% if(totalAmount==0){ %>
+                  <td>
+                    <span class="badge badge-success d-flex align-items-center justify-content-center" style="width: fit-content; margin: 0 auto;">
+                      <i style="color: #10b981; margin-right: 5px;" class="fas fa-circle"></i>
+                      Paid
+                    </span>
+                  </td>
+                <% } else { %>
+                  <td>
+                    <span class="badge badge-danger d-flex align-items-center justify-content-center" style="width: fit-content; margin: 0 auto;">
+                      <i style="color: #ef4444; margin-right: 5px;" class="fas fa-circle"></i>
+                      Pending
+                    </span>
+                  </td>
+                <% } %>
+                <td><strong>₹<%= totalAmount.toFixed(2) %></strong></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
   </div>
 </div>
 

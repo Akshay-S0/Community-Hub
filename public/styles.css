@@ -2814,6 +2814,88 @@ tfoot td {
     font-size: 0.875rem;
     color: #dc2626;
 }
+/* Home Standby Page Styles */
+.status-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.status-icon {
+    color: #3b82f6;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    padding: 2rem;
+    border-radius: 50%;
+    border: 3px solid #3b82f6;
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.6);
+    }
+    100% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* Home Standby responsive design */
+@media (max-width: 768px) {
+    .status-icon {
+        padding: 1.5rem;
+        font-size: 3rem !important;
+    }
+    
+    .card-title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .d-flex.gap-3 {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .d-flex.gap-3 .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Accounting Section Styles */
+.badge-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border: 1px solid #10b981;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    border: 1px solid #ef4444;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+}
+
+/* Accounting table responsive design */
+@media (max-width: 768px) {
+    .accounting-table-container {
+        overflow-x: auto;
+    }
+    
+    .accounting-table-container table {
+        min-width: 500px;
+    }
+}
+
 /* ============================
    Helpdesk Admin Page Styles
    ============================ */
