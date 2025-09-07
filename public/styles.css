@@ -1896,9 +1896,30 @@ button:focus,
     padding: 1.5rem;
     transition: var(--transition);
     height: 100%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .approval-card:hover,
+/* Responsive layout for small screens */
+@media (max-width: 576px) {
+    .resident-header,
+    .approval-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .resident-avatar,
+    .user-avatar {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .resident-info,
+    .user-info {
+        width: 100%;
+    }
+}
+
 .resident-card:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
@@ -1912,17 +1933,22 @@ button:focus,
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
+    flex-wrap: nowrap;
+    gap: 1rem;
 }
 
 .resident-avatar {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
     background: var(--gradient-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .resident-avatar i {
@@ -1930,11 +1956,19 @@ button:focus,
     color: white;
 }
 
+.resident-info,
+.user-info {
+    flex: 1;
+    min-width: 0;
+}
+
 .resident-info h5,
 .user-info h5 {
     margin: 0 0 0.25rem 0;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .flat-badge,
@@ -1945,25 +1979,37 @@ button:focus,
     border-radius: 1rem;
     font-size: 0.875rem;
     font-weight: 500;
+    display: inline-block;
 }
 
 .approval-details,
 .resident-details {
     margin-bottom: 1rem;
+    padding: 0.5rem 0;
 }
 
 .detail-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 0.75rem;
     font-size: 0.9rem;
     color: #000;
+    overflow: hidden;
 }
 
 .detail-item i {
     width: 20px;
     margin-right: 0.75rem;
     font-size: 1rem;
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.detail-item span {
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .approval-actions {
