@@ -1327,30 +1327,69 @@ button:focus,
     font-weight: 700;
     color: #f1f5f9;
     margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
     background: linear-gradient(45deg, #60a5fa, #34d399, #a78bfa);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
+/* Enhanced form layout for better balance */
+.modern-form {
+    max-width: 100%;
+}
+
+/* Better spacing for form rows */
+.modern-form .row {
+    margin-bottom: 0.5rem;
+}
+
+.modern-form .row .form-group {
+    margin-bottom: 1rem;
+}
+
+/* Improved button spacing */
+.modern-form .btn {
+    margin-bottom: 1rem;
+}
+
+/* Better divider spacing */
+.divider {
+    margin: 1.5rem 0;
+}
+
+/* Ensure form actions are properly spaced */
+.form-actions {
+    margin-top: 0.5rem;
+}
+
+/* Consistent spacing for all form elements */
+.modern-form .form-control {
+    margin-bottom: 0;
+}
+
+/* Better visual balance for wider forms */
 .form-wrapper {
     width: 100%;
-    max-width: 450px;
+    max-width: 600px;
     background: rgba(30, 41, 59, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 1rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    padding: 2.5rem;
+    padding: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.15);
     margin: 0 auto;
     position: relative;
     overflow: visible;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .form-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .form-header h2 {
@@ -1366,7 +1405,7 @@ button:focus,
 }
 
 .modern-form .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .modern-form .form-label {
@@ -1519,14 +1558,24 @@ button:focus,
 
 @media (max-width: 768px) {
     .form-wrapper {
-        padding: 2rem;
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+    
+    .modern-form .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-header {
+        margin-bottom: 1.25rem;
     }
 }
 
 @media (max-width: 576px) {
     .form-wrapper {
-        padding: 1.5rem;
-        margin: 1rem;
+        padding: 1.25rem;
+        margin: 0.75rem;
+        max-width: 98%;
     }
     
     .form-header h2 {
@@ -1540,6 +1589,14 @@ button:focus,
     .logo-img {
         width: 60px !important;
         height: 60px !important;
+    }
+    
+    .modern-form .form-group {
+        margin-bottom: 0.875rem;
+    }
+    
+    .form-header {
+        margin-bottom: 1rem;
     }
 }
 
